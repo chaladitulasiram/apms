@@ -28,11 +28,11 @@ public class ProjectService {
         return projectRepository.findById(id);
     }
 
-    public Project createProject(Project project, Long studentId) {
-        Student student = studentRepository.findById(studentId)
-                .orElseThrow(() -> new RuntimeException("Student not found with id: " + studentId));
+    public Project createProject(Project project, String studentEmail) {
+        Student student = studentRepository.findByEmail(studentEmail)
+                .orElseThrow(() -> new RuntimeException("Student not found with email: " + studentEmail));
         project.setStudent(student);
-        project.setStatus(ProjectStatus.PROPOSED);
+        project.setStatus(ProjectStatus.PROPOSED); //
         return projectRepository.save(project);
     }
 

@@ -26,4 +26,9 @@ public class Student {
 
     @Column(nullable = false)
     private String password;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role = Role.STUDENT; // Default role for any new student
 }
+

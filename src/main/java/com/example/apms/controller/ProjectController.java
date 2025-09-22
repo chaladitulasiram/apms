@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -16,10 +17,11 @@ public class ProjectController {
     @Autowired
     private ProjectService projectService;
 
-    @PostMapping("/student/{studentId}")
-    public ResponseEntity<Project> createProject(@RequestBody Project project, @PathVariable Long studentId) {
+    @PostMapping
+    public ResponseEntity<Project> createProject(@RequestBody Project project, Principal principal) {
         try {
-            Project createdProject = projectService.createProject(project, studentId);
+            // principal.getName() will return the email of the logged-in user
+            Project createdProject = projectService.createProject(project, principal.getName());
             return new ResponseEntity<>(createdProject, HttpStatus.CREATED);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(null);
