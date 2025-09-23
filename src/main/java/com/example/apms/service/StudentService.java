@@ -3,6 +3,7 @@ package com.example.apms.service;
 import com.example.apms.model.Student;
 import com.example.apms.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,7 +15,14 @@ public class StudentService {
     @Autowired
     private StudentRepository studentRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+
+
     public Student createStudent(Student student) {
+
+        student.setPassword(passwordEncoder.encode(student.getPassword()));
         // In a real application, you would hash the password here before saving
         return studentRepository.save(student);
     }

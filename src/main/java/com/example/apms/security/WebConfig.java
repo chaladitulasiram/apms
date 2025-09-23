@@ -1,3 +1,4 @@
+// Place this file in: src/main/java/com/example/apms/security/WebConfig.java
 package com.example.apms.security;
 
 import org.springframework.context.annotation.Configuration;
