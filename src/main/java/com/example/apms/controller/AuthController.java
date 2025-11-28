@@ -22,6 +22,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.apms.model.Admin;
+import com.example.apms.repository.AdminRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -41,18 +45,26 @@ public class AuthController {
     @Autowired
     private FacultyService facultyService;
 
+    @Autowired
+    private AdminRepository adminRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder; // Inject password encoder
+
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody RegisterRequest registerRequest) {
         if (registerRequest.getRole() == Role.STUDENT) {
+            // ... existing student logic ...
             Student student = new Student();
             student.setName(registerRequest.getName());
             student.setEmail(registerRequest.getEmail());
-            student.setPassword(registerRequest.getPassword());
+            student.setPassword(registerRequest.getPassword()); // Service usually handles encoding, but here we do it via service
             student.setCourse(registerRequest.getCourse());
             student.setYear(registerRequest.getYear());
             studentService.createStudent(student);
             return ResponseEntity.status(HttpStatus.CREATED).body("Student registered successfully!");
         } else if (registerRequest.getRole() == Role.FACULTY) {
+            // ... existing faculty logic ...
             Faculty faculty = new Faculty();
             faculty.setName(registerRequest.getName());
             faculty.setEmail(registerRequest.getEmail());
@@ -61,6 +73,14 @@ public class AuthController {
             faculty.setDesignation(registerRequest.getDesignation());
             facultyService.createFaculty(faculty);
             return ResponseEntity.status(HttpStatus.CREATED).body("Faculty registered successfully!");
+        } else if (registerRequest.getRole() == Role.ADMIN) {
+            // NEW ADMIN LOGIC
+            Admin admin = new Admin();
+            admin.setName(registerRequest.getName());
+            admin.setEmail(registerRequest.getEmail());
+            admin.setPassword(passwordEncoder.encode(registerRequest.getPassword())); // Encode here
+            adminRepository.save(admin);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Admin registered successfully!");
         } else {
             return ResponseEntity.badRequest().body("Invalid role specified.");
         }

@@ -5,6 +5,7 @@ import com.example.apms.service.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import java.security.Principal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,12 +17,12 @@ public class EvaluationController {
     @Autowired
     private EvaluationService evaluationService;
 
-    @PostMapping("/project/{projectId}/faculty/{facultyId}")
-    @PreAuthorize("hasRole('FACULTY')")
+    @PostMapping("/project/{projectId}")
     public ResponseEntity<Evaluation> createEvaluation(@PathVariable Long projectId,
-                                                       @PathVariable Long facultyId,
-                                                       @RequestBody Evaluation evaluation) {
-        return ResponseEntity.ok(evaluationService.createEvaluation(projectId, facultyId, evaluation));
+                                                       @RequestBody Evaluation evaluation,
+                                                       Principal principal) {
+        // principal.getName() provides the email of the logged-in faculty member
+        return ResponseEntity.ok(evaluationService.createEvaluation(projectId, principal.getName(), evaluation));
     }
 
     @GetMapping("/project/{projectId}")

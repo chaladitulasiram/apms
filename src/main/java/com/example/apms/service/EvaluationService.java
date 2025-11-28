@@ -24,11 +24,11 @@ public class EvaluationService {
     @Autowired
     private FacultyRepository facultyRepository;
 
-    public Evaluation createEvaluation(Long projectId, Long facultyId, Evaluation evaluationDetails) {
+    public Evaluation createEvaluation(Long projectId, String facultyEmail, Evaluation evaluationDetails) {
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new RuntimeException("Project not found with id: " + projectId));
-        Faculty faculty = facultyRepository.findById(facultyId)
-                .orElseThrow(() -> new RuntimeException("Faculty not found with id: " + facultyId));
+        Faculty faculty = facultyRepository.findByEmail(facultyEmail)
+                .orElseThrow(() -> new RuntimeException("Faculty not found with email: " + facultyEmail));
 
         evaluationDetails.setProject(project);
         evaluationDetails.setFaculty(faculty);
